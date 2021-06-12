@@ -45,6 +45,4 @@ public class PratoCarrinho {
                 .map(pgRowSet -> pgRowSet.rowCount() == 1);
 
     }
-
-	
 }

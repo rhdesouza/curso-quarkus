@@ -17,6 +17,8 @@ http://localhost:8180/auth/ - Keycloak
 http://localhost:9090/ - Prometheus
 http://localhost:3000/ - Grafana
 http://localhost:8161/ - Artemis ActiveMQ  
+http://localhost:9000/ - Kafka
+http://localhost:5601/app/kibana - Kibana - Para Dashboards
 
 
 Inclusão de dependencias: via terminal 
@@ -40,17 +42,25 @@ mvn quarkus:add-extension -Dextensions="pg-client" - Para a conexão ao banco po
 mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-openapi" - codumentação
 mvn quarkus:add-extension -Dextensions="resteasy-jsonb" - faz o bind com o json para nos microserviços
 mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-messaging-amqp" - Enviar mensagens para activeMQ.
+mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-messaging-kafka" - Adicionando kafka
 
-Testes
+#Pedido
+mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-openapi" - codumentação
+mvn quarkus:add-extension -Dextensions="resteasy-jsonb" - faz o bind com o json para nos microserviços
+mvn quarkus:add-extension -Dextensions="mongodb-panache" - Conexão ao banco
+mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-messaging-kafka" - Adicionando kafka
+
+
+#Testes
 TesteContainers - Faz os testes nos containers
 Database Rider - Ajuda a simular o cenário de testes (tipo mokito)
 Approval Tests - Melhoria no funlçao do Asserts (JUnit)
 
 
-Comandos:
+#Comandos:
 mvn quarkus:dev - Inciar aplicação em modo desenvolvimento
 
-Prometheus:
+#Prometheus:
 docker build -f Dockerfile.prometheus -t prometheus-ifood .
 
 
