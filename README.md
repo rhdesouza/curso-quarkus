@@ -49,6 +49,8 @@ mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-openapi" - c
 mvn quarkus:add-extension -Dextensions="resteasy-jsonb" - faz o bind com o json para nos microserviços
 mvn quarkus:add-extension -Dextensions="mongodb-panache" - Conexão ao banco
 mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-messaging-kafka" - Adicionando kafka
+mvn quarkus:add-extension -Dextensions="gelf" - Para gerencimento de logs centralizados.
+mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-health" - Para verificar a saúde da aplicação
 
 
 #Testes

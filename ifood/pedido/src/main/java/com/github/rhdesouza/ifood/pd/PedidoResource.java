@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.bson.types.ObjectId;
+import org.jboss.logging.Logger;
 
 import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
 import io.vertx.core.Vertx;
@@ -28,6 +29,8 @@ import io.vertx.mutiny.core.eventbus.EventBus;
 @Consumes(MediaType.APPLICATION_JSON)
 public class PedidoResource {
 
+	private static final Logger log = Logger.getLogger(PedidoResource.class);
+	
     @Inject
     Vertx vertx;
 
@@ -54,7 +57,9 @@ public class PedidoResource {
 
     @GET
     public List<PanacheMongoEntityBase> hello() {
+    	log.info("Teste Logger");
         return Pedido.listAll();
+        
     }
 
     @POST

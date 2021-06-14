@@ -4,7 +4,8 @@ services:
  # Banco de dados usado pela aplicacao
  postgres_cadastro:
   container_name: postgres_cadastro_ifood 
-  image: postgres:12.2
+  image: debezium/example-postgres # essa versao vem com as configuracoes necessarias para o connector do debezium
+  #image: postgres:12.2
   environment:
    POSTGRES_USER: cadastro
    POSTGRES_PASSWORD: cadastro
@@ -147,5 +148,36 @@ services:
     ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ELASTICSEARCH_URL: http://elasticsearch:9300
 
+#Ferramenta para gerenciamento de logs;
+ logstash:
+   container_name: logstash
+   image: docker.elastic.co/logstash/logstash-oss:6.8.2
+   volumes:
+    - source: ./pipelines
+      target: /usr/share/logstash/pipeline
+      type: bind
+   ports:
+    - "5044:5044"
+    - "9600:9600"
+   depends_on:
+    - elastic
 
-
+ #Debezium para conectores do banco de dados.
+ connect:
+  container_name: connect
+  image: debezium/connect:1.1
+  environment:
+   - BOOTSTRAP_SERVERS=kafka:9092
+   - GROUP_ID=1
+   - CONFIG_STORAGE_TOPIC=my_connect_configs
+   - OFFSET_STORAGE_TOPIC=my_connect_offsets
+   - STATUS_STORAGE_TOPIC=my_connect_statuses
+  ports:
+   - 8083:8083
+  links:
+   - kafka
+   - postgres_cadastro
+  depends_on:
+    - kafka
+    - zookeeper
+    - postgres_cadastro

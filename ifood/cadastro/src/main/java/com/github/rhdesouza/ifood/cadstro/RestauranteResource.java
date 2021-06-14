@@ -21,6 +21,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
 import org.eclipse.microprofile.metrics.annotation.Timed;
@@ -39,6 +42,8 @@ import com.github.rhdesouza.ifood.cadstro.dto.AtualizarPratoDTO;
 import com.github.rhdesouza.ifood.cadstro.dto.AtualizarRestauranteDTO;
 import com.github.rhdesouza.ifood.cadstro.dto.PratoMapper;
 import com.github.rhdesouza.ifood.cadstro.dto.RestauranteMapper;
+
+import io.quarkus.security.ForbiddenException;
 
 
 @Path("/restaurantes")
@@ -60,6 +65,12 @@ public class RestauranteResource {
 	@Channel("restaurantes")
 	Emitter<String> emitter;
 	
+	@Inject
+	JsonWebToken jwt;
+	
+	@Inject
+	@Claim(standard = Claims.sub)
+	String sub;
 
 	@GET
 	@Counted(name="quantidade buscas Restaurante")
@@ -73,6 +84,7 @@ public class RestauranteResource {
 	@Transactional
 	public Response adicionar(@Valid AdicionarRestauranteDTO dto) {
 		Restaurante restaurante = restauranteMapper.toRestaurante(dto);
+		restaurante.proprietario = sub;
 		restaurante.persist();
 		
 		String json = JsonbBuilder.create().toJson(restaurante);
@@ -89,8 +101,13 @@ public class RestauranteResource {
 		Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(id);
 		if (restauranteOp.isEmpty())
 			throw new NotFoundException();
-
+		
 		Restaurante restaurante = restauranteOp.get();
+		
+		if (restaurante.proprietario.equals(sub)) {
+			throw new ForbiddenException();
+		}
+		
 		restauranteMapper.toRestaurante(dto, restaurante);
 		restaurante.persist();
 	}
